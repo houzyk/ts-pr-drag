@@ -100,7 +100,11 @@ class ProjectList {
     this.element.id = `${this.status}-projects`;
 
     projectState.addListener((projects: Project[]) => {
-      this.assignedProject = projects;
+      const relevantProject = projects.filter(p => {
+        if (this.status === 'active') return p.status === ProjectStatus.ACTIVE;
+        return p.status === ProjectStatus.FINISHED;
+      });
+      this.assignedProject = relevantProject;
       this.renderProjects();
     });
 
@@ -112,6 +116,7 @@ class ProjectList {
 
   private renderProjects () {
     const list = document.getElementById(`${this.status}-projects-lists`)! as HTMLUListElement;
+    list.innerHTML = '';
     for (const projectItem of this.assignedProject) {
       const listItem = document.createElement('li');
       listItem.textContent = projectItem.title;
