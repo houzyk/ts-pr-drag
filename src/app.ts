@@ -41,6 +41,36 @@ function validator(input: Valid): boolean {
   return isValid;
 }
 
+class ProjectList {
+  templateElement: HTMLTemplateElement;
+  hostElement: HTMLDivElement;
+  element: HTMLElement;
+
+  constructor (private status: 'active' | 'finished') {
+    this.templateElement = document.getElementById('project-list')! as HTMLTemplateElement;
+    this.hostElement = document.getElementById('app')! as HTMLDivElement;
+
+    const importedNode = document.importNode(this.templateElement.content, true);
+    this.element = importedNode.firstElementChild as HTMLElement;
+    this.element.id = `${this.status}-projects`;
+
+    this.attach();
+    this.renderContent();
+  }
+
+  // ! private
+
+  private renderContent () {
+    const listID = `${this.status}-projects-lists`;
+    this.element.querySelector('ul')!.id = listID;
+    this.element.querySelector('h2')!.textContent = this.status.toUpperCase() + 'PROJECTS';
+  }
+
+  private attach () {
+    this.hostElement.insertAdjacentElement('beforeend', this.element);
+  }
+}
+
 class ProjectInput {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
@@ -79,6 +109,7 @@ class ProjectInput {
     const userInput = this.getUserInput();
     if (Array.isArray(userInput)) {
       const [title, description, people] = userInput;
+      // todo
     }
     this.clearInput();
   }
@@ -130,3 +161,5 @@ class ProjectInput {
 
 // INIT FORM
 const projectInput_: ProjectInput = new ProjectInput();
+const activeList = new ProjectList('active');
+const finishedList = new ProjectList('finished');
