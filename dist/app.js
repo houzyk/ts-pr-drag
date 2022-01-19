@@ -24,14 +24,30 @@ class ProjectInput {
         const importedNode = document.importNode(this.templateElement.content, true);
         this.element = importedNode.firstElementChild;
         this.element.id = 'user-input';
-        this.titleInput = this.element.querySelector('#title');
-        this.descriptionInput = this.element.querySelector('#description');
-        this.peopleInput = this.element.querySelector('#people');
+        this.titleInputElement = this.element.querySelector('#title');
+        this.descriptionInputElement = this.element.querySelector('#description');
+        this.peopleInputElement = this.element.querySelector('#people');
         this.config();
         this.attach();
     }
     submit(e) {
         e.preventDefault();
+        this.getUserInput();
+    }
+    getUserInput() {
+        const inputTitle = this.titleInputElement.value;
+        const inputDescription = this.descriptionInputElement.value;
+        const inputPeople = this.peopleInputElement.value;
+        const validation = inputTitle.trim().length === 0 ||
+            inputDescription.trim().length === 0 ||
+            inputPeople.trim().length === 0;
+        if (validation) {
+            alert('Invalid Input');
+            return;
+        }
+        else {
+            return [inputTitle, inputDescription, +inputPeople];
+        }
     }
     config() {
         this.element.addEventListener('submit', this.submit);
