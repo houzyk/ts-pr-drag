@@ -1,7 +1,19 @@
+//  Project
+enum ProjectStatus {ACTIVE, FINISHED};
+class Project {
+  constructor(public id: string,
+                      public title: string,
+                      public description: string,
+                      public people: number,
+                      public status: ProjectStatus) {}
+}
+
 // state management
+type Listener = (items: Project[]) => void;
+
 class ProjectSate {
-  private listeners: any[] = [];
-  private projects: any[] = [];
+  private listeners: Listener[] = [];
+  private projects: Project[] = [];
   private static instance: ProjectSate;
 
   private constructor () {}
@@ -13,19 +25,14 @@ class ProjectSate {
   }
 
   addProject(title: string, description: string, number: number) {
-    const newProject = {
-      id: Math.random.toString(),
-      title: title,
-      description: description,
-      people: number
-    }
+    const newProject = new Project(Math.random.toString(), title, description, number, ProjectStatus.ACTIVE);
     this.projects.push(newProject);
     this.listeners.forEach((listener) => {
       listener(this.projects.slice());
     });
   }
 
-  addListener(listenerFN: Function) {
+  addListener(listenerFN: Listener) {
     this.listeners.push(listenerFN);
   }
 }
@@ -80,7 +87,7 @@ class ProjectList {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
   element: HTMLElement;
-  assignedProject: any[];
+  assignedProject: Project[];
 
   constructor (private status: 'active' | 'finished') {
     this.templateElement = document.getElementById('project-list')! as HTMLTemplateElement;
@@ -92,7 +99,7 @@ class ProjectList {
     this.element = importedNode.firstElementChild as HTMLElement;
     this.element.id = `${this.status}-projects`;
 
-    projectState.addListener((projects: any[]) => {
+    projectState.addListener((projects: Project[]) => {
       this.assignedProject = projects;
       this.renderProjects();
     });
