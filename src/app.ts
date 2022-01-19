@@ -1,3 +1,13 @@
+// validators
+interface Valid {
+  value: string | number;
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  min?: number;
+  max?:number;
+};
+
 // decorators
 function autoBind (_: any, __: string | symbol, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
@@ -11,10 +21,25 @@ function autoBind (_: any, __: string | symbol, descriptor: PropertyDescriptor) 
   return adjustedDescriptor;
 };
 
-// TODO
-// function validator(_: any, __: string | symbol, descriptor: PropertyDescriptor) {
-
-// }
+function validator(input: Valid): boolean {
+  let isValid = true;
+  if (input.required) {
+    isValid = isValid && input.value.toString().trim().length !== 0;
+  }
+  if (input.minLength != null && typeof input.value === 'string') {
+    isValid = isValid && input.value.length >= input.minLength;
+  }
+  if (input.maxLength != null && typeof input.value === 'string') {
+    isValid = isValid && input.value.length <= input.maxLength;
+  }
+  if (input.min != null && typeof input.value === 'number') {
+    isValid = isValid && input.value >= input.min;
+  }
+    if (input.max != null && typeof input.value === 'number') {
+    isValid = isValid && input.value <= input.max;
+  }
+  return isValid;
+}
 
 class ProjectInput {
   templateElement: HTMLTemplateElement;
@@ -63,10 +88,30 @@ class ProjectInput {
     const inputDescription = this.descriptionInputElement.value;
     const inputPeople = this.peopleInputElement.value;
 
-    const validation: boolean = inputTitle.trim().length === 0 ||
-                                inputDescription.trim().length === 0 ||
-                                inputPeople.trim().length === 0;
-    if (validation) {
+    const titleValidator: Valid = {
+      value: inputTitle,
+      required: true,
+      maxLength: 50
+    }
+
+    const descriptionValidator: Valid = {
+      value: inputDescription,
+      required: true,
+      minLength: 5
+    }
+
+    const peopleValidator: Valid = {
+      value: inputPeople,
+      required: true,
+      min: 1,
+      max: 5
+    }
+
+    const validations: boolean = !validator(titleValidator) ||
+                                !validator(descriptionValidator) ||
+                                !validator(peopleValidator);
+
+    if (validations) {
       alert('Invalid Input');
       return;
     } else {
