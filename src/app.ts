@@ -11,6 +11,11 @@ function autoBind (_: any, __: string | symbol, descriptor: PropertyDescriptor) 
   return adjustedDescriptor;
 };
 
+// TODO
+// function validator(_: any, __: string | symbol, descriptor: PropertyDescriptor) {
+
+// }
+
 class ProjectInput {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
@@ -37,10 +42,20 @@ class ProjectInput {
 
   // ! private
 
+  private clearInput () {
+    this.titleInputElement.value = '';
+    this.descriptionInputElement.value = '';
+    this.peopleInputElement.value = '';
+  }
+
   @autoBind
   private submit (e: Event) {
     e.preventDefault();
-    this.getUserInput();
+    const userInput = this.getUserInput();
+    if (Array.isArray(userInput)) {
+      const [title, description, people] = userInput;
+    }
+    this.clearInput();
   }
 
   private getUserInput (): [string, string, number] | void {
@@ -48,7 +63,7 @@ class ProjectInput {
     const inputDescription = this.descriptionInputElement.value;
     const inputPeople = this.peopleInputElement.value;
 
-    const validation: Boolean = inputTitle.trim().length === 0 ||
+    const validation: boolean = inputTitle.trim().length === 0 ||
                                 inputDescription.trim().length === 0 ||
                                 inputPeople.trim().length === 0;
     if (validation) {

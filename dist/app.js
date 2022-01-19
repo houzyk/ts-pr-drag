@@ -30,9 +30,18 @@ class ProjectInput {
         this.config();
         this.attach();
     }
+    clearInput() {
+        this.titleInputElement.value = '';
+        this.descriptionInputElement.value = '';
+        this.peopleInputElement.value = '';
+    }
     submit(e) {
         e.preventDefault();
-        this.getUserInput();
+        const userInput = this.getUserInput();
+        if (Array.isArray(userInput)) {
+            const [title, description, people] = userInput;
+        }
+        this.clearInput();
     }
     getUserInput() {
         const inputTitle = this.titleInputElement.value;
