@@ -1,0 +1,14 @@
+{
+  "name": "ts-pr-drag",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "tsc": "tsc",
+    "start": "lite-server"
+  },
+  "devDependencies": {
+    "lite-server": "^2.6.1",
+    "typescript": "^4.5.4"
+  }
+}
