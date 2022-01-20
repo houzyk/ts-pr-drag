@@ -2,10 +2,10 @@
 enum ProjectStatus {ACTIVE, FINISHED};
 class Project {
   constructor(public id: string,
-                      public title: string,
-                      public description: string,
-                      public people: number,
-                      public status: ProjectStatus) {}
+              public title: string,
+              public description: string,
+              public people: number,
+              public status: ProjectStatus) {}
 }
 
 // state management
@@ -83,6 +83,29 @@ function validator(input: Valid): boolean {
   return isValid;
 }
 
+abstract class Component<T extends HTMLElement, U extends HTMLElement> {
+  templateElement: HTMLTemplateElement;
+  hostElement: T;
+  element: U;
+
+  constructor (templateID: string, hostElementID: string, insertAtStart: boolean, newElementID?: string) {
+    this.templateElement = document.getElementById(templateID)! as HTMLTemplateElement;
+    this.hostElement = document.getElementById(hostElementID)! as T;
+
+    const importedNode = document.importNode(this.templateElement.content, true);
+    this.element = importedNode.firstElementChild as U;
+    if (newElementID) this.element.id = newElementID;
+
+    this.attach(insertAtStart);
+  }
+
+  private attach (insertAtStart: boolean) {
+    this.hostElement.insertAdjacentElement(insertAtStart ? 'afterbegin' : 'beforeend', this.element);
+  }
+
+  abstract configure(): void;
+  abstract renderContent():void ;
+}
 class ProjectList {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
