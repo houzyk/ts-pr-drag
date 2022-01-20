@@ -159,7 +159,7 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements 
     this.element.querySelector('p')!.textContent = this.project.description;
   }
 }
-class ProjectList extends Component<HTMLDivElement, HTMLElement> {
+class ProjectList extends Component<HTMLDivElement, HTMLElement> implements DragTarget{
   assignedProject: Project[];
 
   constructor (private status: 'active' | 'finished') {
@@ -169,6 +169,22 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
 
     this.configure();
     this.renderContent();
+  }
+
+  @autoBind
+  dragOverHandler(_: DragEvent): void {
+    const listEl = this.element.querySelector('ul')!;
+    listEl.classList.add('droppable');
+  }
+
+  dropHandler(_: DragEvent): void {
+    
+  }
+
+  @autoBind
+  dragLeaveHandler(_: DragEvent): void {
+    const listEl = this.element.querySelector('ul')!;
+    listEl.classList.remove('droppable');
   }
 
   // ! private
@@ -182,6 +198,10 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
   }
 
   configure () {
+    this.element.addEventListener('dragover', this.dragOverHandler);
+    this.element.addEventListener('dragleave', this.dragLeaveHandler);
+    this.element.addEventListener('drop', this.dropHandler);
+
     projectState.addListener((projects: Project[]) => {
       const relevantProject = projects.filter(p => {
         if (this.status === 'active') return p.status === ProjectStatus.ACTIVE;
