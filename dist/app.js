@@ -105,6 +105,8 @@ class ProjectItem extends Component {
         return this.project.people === 1 ? '1 person' : `${this.project.people} persons`;
     }
     dragStartHandler(event) {
+        event.dataTransfer.setData('text/plain', this.project.id);
+        event.dataTransfer.effectAllowed = 'move';
     }
     dragEndHandler(_) {
     }
@@ -129,11 +131,14 @@ class ProjectList extends Component {
         this.configure();
         this.renderContent();
     }
-    dragOverHandler(_) {
-        const listEl = this.element.querySelector('ul');
-        listEl.classList.add('droppable');
+    dragOverHandler(event) {
+        if (event.dataTransfer && event.dataTransfer.types[0] === 'text/plain') {
+            event.preventDefault();
+            const listEl = this.element.querySelector('ul');
+            listEl.classList.add('droppable');
+        }
     }
-    dropHandler(_) {
+    dropHandler(event) {
     }
     dragLeaveHandler(_) {
         const listEl = this.element.querySelector('ul');
