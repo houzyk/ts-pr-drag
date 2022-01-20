@@ -104,13 +104,23 @@ class ProjectItem extends Component {
     get persons() {
         return this.project.people === 1 ? '1 person' : `${this.project.people} persons`;
     }
-    configure() { }
+    dragStartHandler(event) {
+    }
+    dragEndHandler(_) {
+    }
+    configure() {
+        this.element.addEventListener('dragstart', this.dragStartHandler);
+        this.element.addEventListener('dragend', this.dragEndHandler);
+    }
     renderContent() {
         this.element.querySelector('h2').textContent = this.project.title;
         this.element.querySelector('h3').textContent = `${this.persons} assigned`;
         this.element.querySelector('p').textContent = this.project.description;
     }
 }
+__decorate([
+    autoBind
+], ProjectItem.prototype, "dragStartHandler", null);
 class ProjectList extends Component {
     constructor(status) {
         super('project-list', 'app', false, `${status}-projects`);
